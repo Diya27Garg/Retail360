@@ -5,3 +5,5 @@ __pycache__/
 data/raw/
 *.csv
 .ipynb_checkpoints/
+models/*.pkl
+models/benchmark_results.csv
