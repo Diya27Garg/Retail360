@@ -1,0 +1,41 @@
+RETAIL360 AUTOMATED INSIGHT REPORT
+Generated: 06 Aug 2026, 01:03
+============================================================
+
+1. REVENUE PERFORMANCE
+----------------------------------------
+The platform generated R$15,422,461.77 in total revenue across 22 months, averaging R$701,020.99 per month.
+Revenue grew in 13 months and declined in 8 months, with an average month-over-month growth rate of 30960.2%.
+Peak revenue was recorded in November 2017 at R$1,153,528.05, while the lowest month was December 2016 at R$19.62.
+
+2. ANOMALY DETECTION
+----------------------------------------
+No significant revenue anomalies detected.
+
+3. CUSTOMER SEGMENTATION
+----------------------------------------
+RFM analysis segmented 93,262 customers into 5 distinct groups.
+The largest segment is 'Potential Loyalists' with 29,400 customers (31.5% of base).
+The highest-value segment is 'New Customers' with avg spend of R$436.91 per customer.
+
+4. CHURN RISK ANALYSIS
+----------------------------------------
+93,262 customers are classified as High Risk (inactive 180+ days), with an average historical spend of R$160.21.
+A targeted win-back campaign achieving a conservative 15% reactivation rate could recover R$2,241,225.75 in revenue.
+
+5. CATEGORY PERFORMANCE
+----------------------------------------
+The top revenue category is 'bed_bath_table' generating R$1,692,714.28 across 9,272 orders with an avg review score of 3.92.
+Among the top 5 categories, 'watches_gifts' has the lowest review score (4.07) — a quality improvement opportunity worth investigating.
+
+6. SELLER RISK
+----------------------------------------
+Seller risk analysis identified 0 high-risk sellers and 4 medium-risk sellers among those with 50+ orders.
+The 4 medium-risk sellers show 25-50% late delivery rates with direct correlation to below-average review scores. Immediate operational review recommended.
+
+7. STRATEGIC RECOMMENDATIONS
+----------------------------------------
+1. Launch win-back campaign targeting High Risk segment — R$1.3M recoverable revenue opportunity.
+2. Invest in 'bed_bath_table' category expansion — highest revenue with growth potential.
+3. Review medium-risk seller contracts — late deliveries directly reduce review scores and repeat purchase rates.
+4. Build loyalty programme for top RFM segments — protect the highest-value customer base.
