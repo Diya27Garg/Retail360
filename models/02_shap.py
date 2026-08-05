@@ -37,30 +37,40 @@ engine = create_engine(
 print("Loading data...")
 
 # ── Pull features ─────────────────────────────────────────
-query = """
+query = f"""
 SELECT
     c.customer_unique_id,
-    COUNT(DISTINCT o.order_id)                          AS frequency,
-    ROUND(SUM(p.total_payment)::numeric, 2)             AS monetary,
+    COUNT(DISTINCT o.order_id)                              AS frequency,
+    ROUND(SUM(p.total_payment)::numeric, 2)                AS monetary,
     '2018-08-29'::date - MAX(o.order_purchase_timestamp::timestamp)::date
-                                                        AS recency_days,
-    ROUND(AVG(p.total_payment)::numeric, 2)             AS avg_order_value,
-    ROUND(AVG(r.review_score)::numeric, 2)              AS avg_review_score,
+                                                           AS recency_days,
+    ROUND(AVG(p.total_payment)::numeric, 2)                AS avg_order_value,
+    ROUND(AVG(r.review_score)::numeric, 2)                 AS avg_review_score,
     COUNT(DISTINCT DATE_TRUNC('month',
-        o.order_purchase_timestamp::timestamp))         AS active_months
+        o.order_purchase_timestamp::timestamp))            AS active_months,
+    ROUND(AVG(p.installments)::numeric, 2)                 AS avg_installments,
+    ROUND(AVG(i.freight_value / NULLIF(i.price, 0))::numeric, 4)
+                                                           AS avg_freight_ratio,
+    COUNT(DISTINCT i.product_id)                           AS unique_products,
+    CASE WHEN AVG(r.review_score) IS NOT NULL THEN 1 ELSE 0 END
+                                                           AS gave_review,
+    ROUND(MAX(p.total_payment)::numeric, 2)                AS max_order_value,
+    ROUND(MIN(p.total_payment)::numeric, 2)                AS min_order_value
 FROM dim_customers c
 JOIN fact_orders o    ON c.customer_id = o.customer_id
 JOIN fact_payments p  ON o.order_id = p.order_id
+JOIN fact_items i     ON o.order_id = i.order_id
 LEFT JOIN fact_reviews r ON o.order_id = r.order_id
 GROUP BY c.customer_unique_id
 """
-
 df = pd.read_sql(query, engine)
 df['churned'] = (df['recency_days'] > ML['churn_threshold_days']).astype(int)
 df = df.dropna()
 
-features = ['frequency', 'monetary',
-            'avg_order_value', 'avg_review_score', 'active_months']
+features = ['frequency', 'monetary', 'avg_order_value',
+            'avg_review_score', 'active_months', 'avg_installments',
+            'avg_freight_ratio', 'unique_products', 'gave_review',
+            'max_order_value', 'min_order_value']
 
 X = df[features]
 y = df['churned']
