@@ -1,0 +1,41 @@
+# Retail360 - Central Configuration
+# All hardcoded values live here - scripts read from this
+
+database:
+  host: localhost
+  port: 5432
+  name: retail360
+  user: postgres
+
+paths:
+  raw_data: data/raw/
+  cleaned_data: data/cleaned/
+
+etl:
+  delivered_status_only: true
+  min_seller_orders: 50
+  churn_high_risk_days: 180
+  churn_medium_risk_days: 90
+
+simulation:
+  days: 30
+  daily_orders_min: 50
+  daily_orders_max: 200
+  price_min: 20.0
+  price_max: 1500.0
+  freight_pct: 0.12
+
+api:
+  exchange_rate_url: "https://api.exchangerate-api.com/v4/latest/USD"
+  base_currency: USD
+  target_currency: BRL
+
+ml:
+  churn_threshold_days: 180
+  test_size: 0.2
+  random_state: 42
+  cv_folds: 5
+
+forecasting:
+  horizon_days: 90
+  seasonality_mode: multiplicative
