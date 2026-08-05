@@ -115,7 +115,41 @@ for _, row in cluster_summary.iterrows():
     label = row['label']
     action = actions.get(label, 'Monitor and analyse further')
     print(f"  {label:<22} → {action}")
+# ── Cluster scatter plot ──────────────────────────────────
+fig, axes = plt.subplots(1, 3, figsize=(15, 5))
 
+pairs = [
+    ('recency_days', 'monetary',  'Recency vs Monetary'),
+    ('frequency',    'monetary',  'Frequency vs Monetary'),
+    ('recency_days', 'frequency', 'Recency vs Frequency'),
+]
+
+colors = ['#1D9E75', '#D85A30', '#7F77DD']
+
+for ax, (x_col, y_col, title) in zip(axes, pairs):
+    for cluster_id in range(best_k):
+        mask  = df['cluster'] == cluster_id
+        label = cluster_summary[
+            cluster_summary['cluster'] == cluster_id
+        ]['label'].values[0]
+        ax.scatter(
+            df[mask][x_col],
+            df[mask][y_col],
+            c=colors[cluster_id],
+            label=label,
+            alpha=0.3,
+            s=5
+        )
+    ax.set_xlabel(x_col)
+    ax.set_ylabel(y_col)
+    ax.set_title(title)
+    ax.legend(fontsize=7)
+
+plt.suptitle('Customer Segments — RFM Feature Space', fontsize=14)
+plt.tight_layout()
+plt.savefig('models/cluster_scatter.png', dpi=150, bbox_inches='tight')
+plt.close()
+print("Saved: models/cluster_scatter.png")
 # ── Elbow plot ────────────────────────────────────────────
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
 
