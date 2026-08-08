@@ -9,6 +9,7 @@ import numpy as np
 import yaml
 import os
 import joblib
+from sklearn.model_selection import GridSearchCV
 from sqlalchemy import create_engine
 from dotenv import load_dotenv
 from sklearn.model_selection import train_test_split, cross_val_score
@@ -163,7 +164,43 @@ for name, model in models.items():
         cv_scores = cross_val_score(model, X_train, y_train,
                                     cv=ML['cv_folds'], scoring='roc_auc')
     print(f"{name:<25} CV AUC: {cv_scores.mean():.4f} (+/- {cv_scores.std():.4f})")
+# ── Hyperparameter tuning — Random Forest ─────────────────
+print("\n" + "="*60)
+print("HYPERPARAMETER TUNING — Random Forest (GridSearchCV)")
+print("="*60)
+print("This may take 5-10 minutes...")
 
+param_grid = {
+    'n_estimators'     : [100, 200, 300],
+    'max_depth'        : [10, 20, None],
+    'min_samples_split': [2, 5, 10],
+    'min_samples_leaf' : [1, 2, 4]
+}
+
+grid_search = GridSearchCV(
+    RandomForestClassifier(class_weight='balanced', random_state=ML['random_state']),
+    param_grid,
+    cv=5,
+    scoring='roc_auc',
+    n_jobs=-1,
+    verbose=1
+)
+grid_search.fit(X_train, y_train)
+
+print(f"\nBest parameters: {grid_search.best_params_}")
+print(f"Best CV AUC: {grid_search.best_score_:.4f}")
+
+# Compare tuned vs default
+tuned_model = grid_search.best_estimator_
+y_prob_tuned = tuned_model.predict_proba(X_test)[:, 1]
+tuned_auc = roc_auc_score(y_test, y_prob_tuned)
+print(f"Tuned model test AUC: {tuned_auc:.4f}")
+results_df = pd.DataFrame(results).sort_values('AUC-ROC', ascending=False)
+print(f"Improvement over default: +{(tuned_auc - results_df.iloc[0]['AUC-ROC']):.4f}")
+
+# Save tuned model
+joblib.dump(tuned_model, 'models/tuned_champion_model.pkl')
+print("Tuned model saved to models/tuned_champion_model.pkl")
 # ── Final ranking ─────────────────────────────────────────
 results_df = pd.DataFrame(results).sort_values('AUC-ROC', ascending=False)
 print("\n" + "="*60)
